@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+class CreateKubikSettings < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :kubik_settings do |t|
+      t.json :settings_hash
+      t.integer :singleton_guard, default: 1
+      t.timestamps
+    end
+    add_index :kubik_settings, :singleton_guard, unique: true
+  end
+end
