@@ -1,8 +1,8 @@
 ActiveAdmin.register Kubik::Setting do
   permit_params do
     permitted = [:settings_hash]
-    if defined? (Kubik::PermitAdditionalMetatagableAdminParams)
-      Kubik::PermitAdditionalMetatagableAdminParams.push_to_params(Setting, permitted)
+    if defined?(Kubik::PermitAdditionalMetatagableAdminParams)
+      Kubik::PermitAdditionalMetatagableAdminParams.push_to_params(Kubik::Setting, permitted)
     end
     permitted
   end
