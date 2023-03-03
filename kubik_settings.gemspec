@@ -23,5 +23,6 @@ Gem::Specification.new do |spec|
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activeadmin"
   spec.add_dependency "rails"
 end

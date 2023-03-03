@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_admin"
 require "kubik_settings/version"
 require "kubik_settings/railtie"
 
