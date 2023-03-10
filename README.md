@@ -1,8 +1,6 @@
-# KubikSettings
-Short description and motivation.
+# Kubik Settings
 
-## Usage
-How to use my plugin.
+Editable application settings
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -16,9 +14,44 @@ And then execute:
 $ bundle
 ```
 
-Or install it yourself as:
+Run the generator to add the necessary migration
 ```bash
-$ gem install kubik_settings
+$ bundle exec rails g kubik_settings:install
+```
+
+Add your schema into an initializer
+```ruby
+KubikSettings.configure do |config|
+  config.settings = {
+    email: {
+      default: 'hello@your-business.com',
+      input: :string,
+      type: ActiveRecord::Type::String
+    },
+    telephone: {
+      default: '0131 XXX XXXX',
+      input: :string,
+      type: ActiveRecord::Type::String
+    },
+    facebook: {
+      default: 'https://www.facebook.com/your-account',
+      input: :string,
+      type: ActiveRecord::Type::String
+    },
+  }
+end
+```
+
+Fetch your settings from your base controller
+
+```ruby
+class KubikController < ApplicationController
+  before_action :fetch_kubik_settings
+
+  def fetch_kubik_settings
+    @kubik_settings = Kubik::Setting.cached
+  end
+end
 ```
 
 ## Contributing

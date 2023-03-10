@@ -2,10 +2,22 @@
 
 require "active_admin"
 require "kubik_settings/version"
-require "kubik_settings/railtie"
 
 module KubikSettings
   class Error < StandardError; end
+
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configuration
+    @configuration ||= ::Kubik::Settings::Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
+  end
+
   module Rails
     class Engine < ::Rails::Engine
       isolate_namespace KubikSettings
@@ -15,4 +27,8 @@ module KubikSettings
       end
     end
   end
+end
+
+module Kubik
+  require "kubik/settings/configuration"
 end
