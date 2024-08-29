@@ -2,7 +2,7 @@ ActiveAdmin.register Kubik::Setting do
   menu label: 'Settings'
 
   permit_params do
-    permitted = Kubik::Setting::ATTRIBUTES.keys + [:settings]
+    permitted = Kubik::Setting::ATTRIBUTES.keys + [:settings] + [settings_hash: []]
     if defined?(Kubik::PermitAdditionalMetatagableAdminParams)
       Kubik::PermitAdditionalMetatagableAdminParams.push_to_params(Kubik::Setting, permitted)
     end
@@ -13,6 +13,7 @@ ActiveAdmin.register Kubik::Setting do
     tabs do
       tab "Settings" do
         attributes_table_for resource do
+          settings_attributes = Kubik::Setting::ATTRIBUTES
           Kubik::Setting::ATTRIBUTES.each do |key, _values|
             row key, ->{ resource.send(key) }
           end
