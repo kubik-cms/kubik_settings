@@ -15,7 +15,7 @@ class Kubik::Setting < ApplicationRecord
 
   ATTRIBUTES.each do |key, value|
     define_method key do
-      settings_attribute = settings_hash[key].blank? ? value[:default] : settings_hash[key]
+      settings_attribute = settings_hash[key].blank? && !self.persisted? ? value[:default] : settings_hash[key]
       value[:type].new.cast(settings_attribute)
     end
   end
@@ -40,6 +40,6 @@ class Kubik::Setting < ApplicationRecord
   private
 
   def flush_cache
-    Rails.cache.delete("kubik/settings")
+    Rails.cache.delete("kubik-settings")
   end
 end
