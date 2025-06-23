@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
-require "inherited_resources"
-require "active_admin"
+# Ensure inherited_resources is loaded first
+begin
+  require "inherited_resources"
+rescue LoadError => e
+  raise LoadError, "kubik_settings requires inherited_resources gem. Please add 'gem \"inherited_resources\"' to your Gemfile."
+end
+
+# Then load ActiveAdmin
+begin
+  require "active_admin"
+rescue LoadError => e
+  raise LoadError, "kubik_settings requires activeadmin gem. Please add 'gem \"activeadmin\"' to your Gemfile."
+end
+
 require "kubik_settings/version"
 
 module KubikSettings
