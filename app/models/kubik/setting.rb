@@ -33,9 +33,18 @@ class Kubik::Setting < ActiveRecord::Base
     end
   end
 
+  # Conditionally include metatag functionality only if the required table exists
   if defined?(Kubik::Metatagable)
-    include Kubik::Metatagable
-    kubik_metatagable
+    begin
+      # Check if the meta tags table exists before including the module
+      if table_exists? && connection.table_exists?('kubik_meta_tags')
+        include Kubik::Metatagable
+        kubik_metatagable
+      end
+    rescue ActiveRecord::NoDatabaseError, ActiveRecord::StatementInvalid => e
+      # Silently skip metatag functionality if database/table doesn't exist
+      Rails.logger.warn "Kubik::Metatagable not included: #{e.message}" if Rails.logger
+    end
   end
 
   def self.table_name

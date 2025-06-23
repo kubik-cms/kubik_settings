@@ -40,7 +40,8 @@ module ActiveAdmin
                     end
                   end
                 end
-                if resource.respond_to?(:meta_tag)
+                # Only show meta tab if the resource has metatag functionality
+                if resource.respond_to?(:meta_tag) && resource.meta_tag.present?
                   tab "Meta" do
                     render "admin/show/meta_tag_seo_helper", resource: resource
                     render "admin/show/meta_tag_social_helper", resource: resource
@@ -62,7 +63,8 @@ module ActiveAdmin
                     end
                   end
                 end
-                if f.object.respond_to?(:meta_tag)
+                # Only show meta tab if the resource has metatag functionality
+                if f.object.respond_to?(:meta_tag) && f.object.meta_tag.present?
                   tab "Meta" do
                     render "admin/form/meta_tag_seo_helper", f: f
                     render "admin/form/meta_tag_social_helper", f: f
