@@ -13,7 +13,8 @@ module Kubik
         def db_migrations
           migration_template("migrations/create_kubik_settings.rb.erb",
                              "db/migrate/create_#{table_name}.rb",
-                             migration_version: migration_version)
+                             migration_version: migration_version,
+                             table_name: table_name)
         end
 
         def active_admin_resource
@@ -29,7 +30,15 @@ module Kubik
         private
 
         def table_name
-          KubikSettings.configuration.table_name
+          # Ensure configuration is available, fallback to default if not
+          begin
+            require "kubik_settings"
+            KubikSettings.ensure_configuration
+            KubikSettings.configuration.table_name
+          rescue => e
+            # Fallback to default table name if configuration is not available
+            "kubik_settings"
+          end
         end
 
         def migration_version
