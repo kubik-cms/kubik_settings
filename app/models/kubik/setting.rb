@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Kubik::Setting < ApplicationRecord
+class Kubik::Setting < ActiveRecord::Base
   after_commit :flush_cache
 
   # Ensure configuration is available before defining ATTRIBUTES
