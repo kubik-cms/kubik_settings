@@ -25,6 +25,10 @@ class Kubik::Setting < ApplicationRecord
     kubik_metatagable
   end
 
+  def self.table_name
+    KubikSettings.configuration.table_name
+  end
+
   def self.cached
     Rails.cache.fetch("kubik-settings") { instance }
   end

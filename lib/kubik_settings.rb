@@ -31,4 +31,5 @@ end
 
 module Kubik
   require "kubik/settings/configuration"
+  require "kubik/settings"
 end
