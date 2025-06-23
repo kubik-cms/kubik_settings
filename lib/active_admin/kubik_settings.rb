@@ -7,6 +7,9 @@ module ActiveAdmin
         # Ensure configuration is available
         ::KubikSettings.ensure_configuration
 
+        # Ensure the model is loaded
+        require_relative "../../app/models/kubik/setting"
+
         ActiveAdmin.register Kubik::Setting do
           # Menu configuration
           menu_options = ::KubikSettings.configuration.menu_options || {}

@@ -33,6 +33,8 @@ module KubikSettings
 
       initializer :kubik_settings do
         ActiveAdmin.application.load_paths += Dir["#{File.dirname(__FILE__)}/active_admin"]
+        # Add app/models to autoload paths
+        Rails.application.config.autoload_paths += Dir["#{File.dirname(__FILE__)}/app/models"]
       end
 
       initializer :kubik_settings_active_admin, after: :kubik_settings do
