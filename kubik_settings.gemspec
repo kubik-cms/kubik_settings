@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activeadmin", "~> 2.13"
-  spec.add_dependency "inherited_resources", "~> 1.13"
-  spec.add_dependency "rails", ">= 6.1", "< 7.1"
+  spec.add_dependency "activeadmin", ">= 2.13", "< 4.0"
+  spec.add_dependency "inherited_resources", ">= 1.13", "< 2.0"
+  spec.add_dependency "rails", ">= 6.1"
 end

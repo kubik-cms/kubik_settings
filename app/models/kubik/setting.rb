@@ -19,7 +19,12 @@ class Kubik::Setting < ActiveRecord::Base
     }
   end
 
-  store :settings_hash, accessors: ATTRIBUTES.keys
+  # Use store method with Rails 7+ compatibility
+  if Rails.version.to_f >= 7.0
+    store :settings_hash, accessors: ATTRIBUTES.keys, coder: JSON
+  else
+    store :settings_hash, accessors: ATTRIBUTES.keys
+  end
 
   ATTRIBUTES.each do |key, value|
     define_method key do

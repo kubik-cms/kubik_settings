@@ -2,6 +2,12 @@
 
 Editable application settings with configurable table names and customizable Active Admin interface.
 
+## Requirements
+
+- Ruby >= 2.7.0
+- Rails >= 6.1 (including Rails 7+)
+- ActiveAdmin >= 2.13
+
 ## Installation
 Add this line to your application's Gemfile:
 
