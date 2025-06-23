@@ -11,10 +11,18 @@ module Kubik
         argument :name, type: :string, default: "kubik"
 
         def db_migrations
-          migration_template("migrations/create_kubik_settings.rb.erb",
-                             "db/migrate/create_#{table_name}.rb",
-                             migration_version: migration_version,
-                             table_name: table_name)
+          migration_file = "db/migrate/create_#{table_name}.rb"
+
+          # Check if migration already exists
+          if File.exist?(migration_file)
+            puts "Migration file #{migration_file} already exists. Skipping migration generation."
+            puts "If you need to regenerate the migration, please delete the existing file first."
+          else
+            migration_template("migrations/create_kubik_settings.rb.erb",
+                               migration_file,
+                               migration_version: migration_version,
+                               table_name: table_name)
+          end
         end
 
         def active_admin_resource

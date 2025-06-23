@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Create<%= table_name.classify %> < ActiveRecord::Migration<%= migration_version %>
+class CreateKubikSettings < ActiveRecord::Migration<%= migration_version %>
   def change
     create_table :<%= table_name %> do |t|
       t.json :settings_hash, default: {}
