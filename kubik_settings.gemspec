@@ -24,5 +24,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activeadmin"
+  spec.add_dependency "inherited_resources"
   spec.add_dependency "rails"
 end
