@@ -6,7 +6,7 @@
 
 ActiveAdmin.register Kubik::Setting do
   # Ensure configuration is available
-  KubikSettings.ensure_configuration
+  ::KubikSettings.ensure_configuration
 
   # Menu configuration - customize as needed
   menu label: 'Settings', priority: 1, parent: nil

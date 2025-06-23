@@ -5,11 +5,11 @@ module ActiveAdmin
     class BaseResource
       def self.register
         # Ensure configuration is available
-        KubikSettings.ensure_configuration
+        ::KubikSettings.ensure_configuration
 
         ActiveAdmin.register Kubik::Setting do
           # Menu configuration
-          menu_options = KubikSettings.configuration.menu_options || {}
+          menu_options = ::KubikSettings.configuration.menu_options || {}
           menu_options.each do |key, value|
             send(key, value)
           end
@@ -88,8 +88,8 @@ module ActiveAdmin
           end
 
           # Allow for custom blocks to be executed within the resource context
-          if KubikSettings.configuration.active_admin_blocks
-            KubikSettings.configuration.active_admin_blocks.each do |block|
+          if ::KubikSettings.configuration.active_admin_blocks
+            ::KubikSettings.configuration.active_admin_blocks.each do |block|
               instance_eval(&block)
             end
           end

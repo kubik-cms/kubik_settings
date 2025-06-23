@@ -5,12 +5,12 @@ class Kubik::Setting < ApplicationRecord
 
   # Ensure configuration is available before defining ATTRIBUTES
   def self.ensure_configuration
-    KubikSettings.ensure_configuration
+    ::KubikSettings.ensure_configuration
   end
 
   ATTRIBUTES = begin
     ensure_configuration
-    KubikSettings.configuration.settings || {
+    ::KubikSettings.configuration.settings || {
       example_setting: {
         default: true,
         input: :boolean,
@@ -35,7 +35,7 @@ class Kubik::Setting < ApplicationRecord
 
   def self.table_name
     ensure_configuration
-    KubikSettings.configuration.table_name
+    ::KubikSettings.configuration.table_name
   end
 
   def self.cached
