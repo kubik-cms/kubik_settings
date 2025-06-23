@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+# Kubik Settings Configuration
+# This file configures the kubik_settings gem
+
+KubikSettings.configure do |config|
+  # Configure the table name (optional, defaults to 'kubik_settings')
+  # config.table_name = 'my_custom_settings'
+
+  # Configure menu options (optional)
+  # config.menu_options = {
+  #   label: 'Site Settings',
+  #   priority: 1,
+  #   parent: 'Configuration'
+  # }
+
+  # Define your settings schema
+  config.settings = {
+    # Example settings - customize these for your application
+    site_name: {
+      default: 'My Website',
+      input: :string,
+      type: ActiveRecord::Type::String
+    },
+    contact_email: {
+      default: 'hello@example.com',
+      input: :string,
+      type: ActiveRecord::Type::String
+    },
+    maintenance_mode: {
+      default: false,
+      input: :boolean,
+      type: ActiveRecord::Type::Boolean
+    }
+    # Add more settings as needed
+  }
+
+  # Add custom Active Admin blocks (optional)
+  # config.add_active_admin_block do
+  #   sidebar "Additional Information", only: :show do
+  #     ul do
+  #       li "Custom sidebar content"
+  #     end
+  #   end
+  # end
+end 

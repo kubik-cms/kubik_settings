@@ -16,6 +16,16 @@ module Kubik
                              migration_version: migration_version)
         end
 
+        def active_admin_resource
+          template("active_admin/kubik_settings.rb.erb",
+                   "app/admin/kubik_settings.rb")
+        end
+
+        def configuration_initializer
+          template("initializers/kubik_settings.rb.erb",
+                   "config/initializers/kubik_settings.rb")
+        end
+
         private
 
         def table_name

@@ -1,0 +1,122 @@
+# frozen_string_literal: true
+
+# Customizable Kubik Settings Active Admin Resource
+# This file allows you to customize the Kubik Settings admin interface
+# You can override any Active Admin configuration here
+
+ActiveAdmin.register Kubik::Setting do
+  # Ensure configuration is available
+  KubikSettings.ensure_configuration
+
+  # Menu configuration - customize as needed
+  menu label: 'Settings', priority: 1, parent: nil
+
+  # Example of custom menu configuration:
+  # menu label: 'Site Settings', priority: 1, parent: 'Configuration'
+  # menu label: 'Global Settings', priority: 10, parent: 'Admin'
+
+  permit_params do
+    permitted = Kubik::Setting::ATTRIBUTES.keys + [:settings] + [settings_hash: []]
+    if defined?(Kubik::PermitAdditionalMetatagableAdminParams)
+      Kubik::PermitAdditionalMetatagableAdminParams.push_to_params(Kubik::Setting, permitted)
+    end
+    permitted
+  end
+
+  show do
+    tabs do
+      tab "Settings" do
+        attributes_table_for resource do
+          settings_attributes = Kubik::Setting::ATTRIBUTES
+          Kubik::Setting::ATTRIBUTES.each do |key, _values|
+            row key, ->{ resource.send(key) }
+          end
+        end
+      end
+      if resource.respond_to?(:meta_tag)
+        tab "Meta" do
+          render "admin/show/meta_tag_seo_helper", resource: resource
+          render "admin/show/meta_tag_social_helper", resource: resource
+        end
+      end
+      # Add custom tabs here if needed
+      # tab "Custom Tab" do
+      #   panel "Custom Content" do
+      #     para "Your custom content here"
+      #   end
+      # end
+    end
+  end
+
+  form do |f|
+    tabs do
+      tab "Settings" do
+        inputs do
+          f.input :settings_hash, as: :hidden, input_html: { id: "settings" }
+          Kubik::Setting::ATTRIBUTES.each do |key, values|
+            input_html = {}
+            input_html.merge!({ value: f.object.send(key) })   if values[:input] != :boolean
+            input_html.merge!({ checked: f.object.send(key) }) if values[:input] == :boolean && f.object.send(key)
+            f.input key, as: values[:input], input_html: input_html
+          end
+        end
+      end
+      if f.object.respond_to?(:meta_tag)
+        tab "Meta" do
+          render "admin/form/meta_tag_seo_helper", f: f
+          render "admin/form/meta_tag_social_helper", f: f
+        end
+      end
+      # Add custom form tabs here if needed
+      # tab "Custom Form Tab" do
+      #   inputs do
+      #     f.input :custom_field, as: :string
+      #   end
+      # end
+    end
+    actions
+  end
+
+  controller do
+    actions :all, except: %i[create new destroy]
+
+    def find_resource
+      Kubik::Setting.instance
+    end
+
+    def index
+      redirect_to admin_kubik_setting_path(1)
+    end
+
+    def update
+      merged_params = Kubik::Setting::ATTRIBUTES.keys.map do |key|
+        [key, params[:setting][key]]
+      end.to_h
+      params[:setting][:settings_hash] = JSON.parse(merged_params.to_json)
+      super
+    end
+
+    # Add custom controller methods here if needed
+    # def custom_action
+    #   # Your custom action logic
+    # end
+  end
+
+  # Add custom sidebar content if needed
+  # sidebar "Additional Information", only: :show do
+  #   ul do
+  #     li "Custom sidebar content"
+  #   end
+  # end
+
+  # Add custom actions if needed
+  # action_item :custom_action, only: :show do
+  #   link_to 'Custom Action', custom_action_admin_kubik_setting_path(resource)
+  # end
+
+  # Add custom member actions if needed
+  # member_action :custom_action, method: :get do
+  #   # Your custom action logic
+  #   redirect_to resource_path, notice: 'Custom action completed'
+  # end
+end 

@@ -3,13 +3,21 @@
 class Kubik::Setting < ApplicationRecord
   after_commit :flush_cache
 
-  ATTRIBUTES = KubikSettings.configuration.settings || {
-    example_setting: {
-      default: true,
-      input: :boolean,
-      type: ActiveRecord::Type::Boolean
+  # Ensure configuration is available before defining ATTRIBUTES
+  def self.ensure_configuration
+    KubikSettings.ensure_configuration
+  end
+
+  ATTRIBUTES = begin
+    ensure_configuration
+    KubikSettings.configuration.settings || {
+      example_setting: {
+        default: true,
+        input: :boolean,
+        type: ActiveRecord::Type::Boolean
+      }
     }
-  }
+  end
 
   store :settings_hash, accessors: ATTRIBUTES.keys
 
@@ -26,6 +34,7 @@ class Kubik::Setting < ApplicationRecord
   end
 
   def self.table_name
+    ensure_configuration
     KubikSettings.configuration.table_name
   end
 
