@@ -35,6 +35,10 @@ KubikSettings.configure do |config|
     # Add more settings as needed
   }
 
+  # Per-model CMS settings (Media, Page, News, …): see
+  # config/initializers/kubik_settings.resource_settings.rb.example
+  # Run: bin/rails kubik_settings:upgrade
+
   # Add custom Active Admin blocks (optional)
   # config.add_active_admin_block do
   #   sidebar "Additional Information", only: :show do
@@ -43,4 +47,4 @@ KubikSettings.configure do |config|
   #     end
   #   end
   # end
-end 
+end

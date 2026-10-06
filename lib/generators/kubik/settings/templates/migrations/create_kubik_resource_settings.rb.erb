@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+class CreateKubikResourceSettings < ActiveRecord::Migration<%= migration_version %>
+  def change
+    return if table_exists?(:kubik_resource_settings)
+
+    create_table :kubik_resource_settings do |t|
+      t.string :key, null: false
+      t.jsonb :settings_hash, null: false, default: {}
+      t.timestamps
+    end
+
+    add_index :kubik_resource_settings, :key, unique: true
+  end
+end

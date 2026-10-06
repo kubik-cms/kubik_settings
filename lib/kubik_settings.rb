@@ -54,9 +54,22 @@ module KubikSettings
       initializer :kubik_settings_active_admin, after: :kubik_settings do
         require "active_admin/kubik_settings"
       end
+
+      initializer :kubik_resource_settings_active_admin, after: :kubik_settings_active_admin do
+        require "active_admin/kubik_resource_settings"
+      end
+
+      config.after_initialize do
+        if defined?(::ActiveAdmin)
+          require "kubik_settings/active_admin/index_settings_links"
+          KubikSettings::ActiveAdminIntegration::IndexSettingsLinks.apply!
+        end
+      end
     end
   end
 end
+
+require "kubik_settings/resource_resolver"
 
 module Kubik
   require "kubik/settings/configuration"

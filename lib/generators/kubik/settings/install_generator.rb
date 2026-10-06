@@ -23,6 +23,17 @@ module Kubik
                                migration_version: migration_version,
                                table_name: table_name)
           end
+
+          resource_migration = Dir.glob("db/migrate/*_create_kubik_resource_settings.rb").first
+          if resource_migration
+            puts "Migration #{resource_migration} already exists. Skipping kubik_resource_settings migration."
+          else
+            migration_template(
+              "migrations/create_kubik_resource_settings.rb.erb",
+              "db/migrate/create_kubik_resource_settings.rb",
+              migration_version: migration_version
+            )
+          end
         end
 
         def active_admin_resource

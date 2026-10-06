@@ -131,6 +131,32 @@ ActiveAdmin.register Kubik::Setting do
 end
 ```
 
+### Per-model CMS resource settings
+
+Register settings for a content type (Media, Page, News, …) in the same initializer. Each registered type gets an Active Admin edit screen (no extra menu item) and a **Settings** link on that model’s index.
+
+```bash
+bin/rails kubik_settings:upgrade   # existing apps: migration + example snippet
+bin/rails db:migrate
+```
+
+```ruby
+KubikSettings.configure do |config|
+  config.resource_class_map = { "Page" => :page }
+
+  config.register_resource :page,
+    label: "Page settings",
+    index_resource: "Page",
+    index_path_helper: :admin_pages_path,
+    settings: { ... },
+    fallbacks: { ... }
+end
+```
+
+Read values (e.g. from other gems) via `KubikSettings::ResourceResolver.get(:page, :meta_tag_suggestions)`.
+
+Optional: `bin/rails kubik_settings:copy_legacy_ai_media_settings` when migrating media AI flags from `Kubik::AiConfiguration`.
+
 ## Usage
 
 Fetch your settings from your base controller:
