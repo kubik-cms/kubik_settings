@@ -12,19 +12,19 @@
 
 # config.register_resource :media,
 #   label: "Media settings",
+#   display: :offcanvas, # :page (default) or :offcanvas — opens Settings from the index in the Kubik offcanvas
 #   index_resource: "Kubik::MediaUpload",
 #   index_path_helper: :admin_kubik_media_uploads_path,
 #   tabs: [
 #     { label: "AI", keys: %i[
 #       auto_analyze_on_upload auto_apply_alt_text auto_apply_tags
-#       prefer_no_faces tag_vocabulary_hints context_media
+#       tag_vocabulary_hints context_media
 #     ] }
 #   ],
 #   settings: {
 #     auto_analyze_on_upload: { default: true, input: :boolean, type: ActiveRecord::Type::Boolean },
 #     auto_apply_alt_text: { default: true, input: :boolean, type: ActiveRecord::Type::Boolean },
 #     auto_apply_tags: { default: true, input: :boolean, type: ActiveRecord::Type::Boolean },
-#     prefer_no_faces: { default: false, input: :boolean, type: ActiveRecord::Type::Boolean },
 #     tag_vocabulary_hints: { default: "", input: :string, type: ActiveRecord::Type::String },
 #     context_media: {
 #       default: "",
@@ -37,7 +37,6 @@
 #     auto_analyze_on_upload: -> { Kubik::AiConfiguration.instance.auto_analyze_on_upload if defined?(Kubik::AiConfiguration) },
 #     auto_apply_alt_text: -> { Kubik::AiConfiguration.instance.auto_apply_alt_text if defined?(Kubik::AiConfiguration) },
 #     auto_apply_tags: -> { Kubik::AiConfiguration.instance.auto_apply_tags if defined?(Kubik::AiConfiguration) },
-#     prefer_no_faces: -> { Kubik::AiConfiguration.instance.prefer_no_faces if defined?(Kubik::AiConfiguration) },
 #     tag_vocabulary_hints: -> { Kubik::AiConfiguration.instance.tag_vocabulary_hints if defined?(Kubik::AiConfiguration) },
 #     context_media: -> { Kubik::AiConfiguration.instance.context_media if defined?(Kubik::AiConfiguration) }
 #   }

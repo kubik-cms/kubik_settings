@@ -21,6 +21,11 @@ module KubikSettings
         meta = definition.setting_meta(setting_key)
         return nil unless meta
 
+        if meta[:input] == :boolean && record.setting_key_stored?(setting_key)
+          stored = record.raw_stored_value(setting_key)
+          return cast_value(meta, stored.nil? ? false : stored)
+        end
+
         stored = record.raw_stored_value(setting_key)
         unless stored_unset?(stored, meta)
           return cast_value(meta, stored)
@@ -64,8 +69,54 @@ module KubikSettings
         raise KubikSettings::Error, "Unknown resource setting #{resource_key}" unless definition
 
         record = Kubik::ResourceSetting.for(resource_key)
-        helper = "edit_admin_#{definition.admin_as.underscore}_path"
+        helper =
+          if definition.offcanvas?
+            "offcanvas_admin_#{definition.admin_as.underscore}_path"
+          else
+            "edit_admin_#{definition.admin_as.underscore}_path"
+          end
         ::Rails.application.routes.url_helpers.public_send(helper, record, **url_options)
+      end
+
+      def index_path(resource_key, **url_options)
+        definition = configuration.resource_registry[resource_key.to_s]
+        return nil unless definition&.index_path_helper
+
+        ::Rails.application.routes.url_helpers.public_send(definition.index_path_helper, **url_options)
+      end
+
+      def build_settings_hash(definition, raw_params)
+        boolean = ActiveModel::Type::Boolean.new
+        raw = raw_params.respond_to?(:to_unsafe_h) ? raw_params.to_unsafe_h : raw_params.to_h
+        raw = raw.with_indifferent_access
+
+        definition.setting_keys.each_with_object({}) do |key, merged|
+          meta = definition.setting_meta(key)
+          name = key.to_s
+          merged[name] =
+            if meta&.dig(:input) == :boolean
+              boolean.cast(boolean_param_value(raw, name))
+            else
+              raw[name]
+            end
+        end
+      end
+
+      def update_path(resource_key, **url_options)
+        definition = configuration.resource_registry[resource_key.to_s]
+        raise KubikSettings::Error, "Unknown resource setting #{resource_key}" unless definition
+
+        record = Kubik::ResourceSetting.for(resource_key)
+        helper = "admin_#{definition.admin_as.underscore}_path"
+        ::Rails.application.routes.url_helpers.public_send(helper, record, **url_options)
+      end
+
+      def boolean_param_value(raw, name)
+        return false unless raw.key?(name)
+
+        value = raw[name]
+        value = value.last if value.is_a?(Array)
+        value
       end
 
       private

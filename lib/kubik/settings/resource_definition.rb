@@ -11,10 +11,11 @@ module Kubik
                   :settings,
                   :fallbacks,
                   :admin_as,
-                  :active_admin_blocks
+                  :active_admin_blocks,
+                  :display
 
       def initialize(key:, label: nil, index_resource: nil, index_path_helper: nil, tabs: nil, settings: {},
-                     fallbacks: {}, admin_as: nil, active_admin_blocks: [])
+                     fallbacks: {}, admin_as: nil, active_admin_blocks: [], display: :page)
         @key = key.to_s
         @label = label || "#{@key.humanize} settings"
         @index_resource = index_resource
@@ -24,6 +25,15 @@ module Kubik
         @fallbacks = fallbacks || {}
         @admin_as = admin_as || "#{@key.camelize}ResourceSetting"
         @active_admin_blocks = active_admin_blocks
+        @display = display.to_sym
+      end
+
+      def offcanvas?
+        @display == :offcanvas
+      end
+
+      def page?
+        @display == :page
       end
 
       def setting_keys

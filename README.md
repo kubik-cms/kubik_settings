@@ -148,6 +148,7 @@ KubikSettings.configure do |config|
     label: "Page settings",
     index_resource: "Page",
     index_path_helper: :admin_pages_path,
+    display: :page, # or :offcanvas to open Settings from the index in the Kubik offcanvas drawer
     settings: { ... },
     fallbacks: { ... }
 end

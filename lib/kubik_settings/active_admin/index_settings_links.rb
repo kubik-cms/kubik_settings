@@ -24,9 +24,18 @@ module KubikSettings
           end
 
           setting_key = definition.key
-          config.dsl.class_eval do
+          config.dsl.run_registration_block do
             action_item :"kubik_resource_settings_#{setting_key}", only: :index, priority: 0 do
-              link_to "Settings", KubikSettings::ResourceResolver.edit_path(setting_key)
+              if definition.offcanvas?
+                helpers.kubik_offcanvas_open(
+                  url: KubikSettings::ResourceResolver.edit_path(setting_key),
+                  header: definition.label,
+                  label: "Settings",
+                  tone: "white"
+                )
+              else
+                link_to "Settings", KubikSettings::ResourceResolver.edit_path(setting_key)
+              end
             end
           end
         rescue NameError => e

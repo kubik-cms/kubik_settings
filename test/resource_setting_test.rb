@@ -47,4 +47,16 @@ class ResourceSettingTest < ActiveSupport::TestCase
     record.update!(settings_hash: { "enabled" => false })
     assert_equal false, KubikSettings::ResourceResolver.get(:test_resource, :enabled)
   end
+
+  test "resolver treats stored nil boolean as false not fallback" do
+    record = Kubik::ResourceSetting.for(:test_resource)
+    record.update!(settings_hash: { "enabled" => nil })
+    assert_equal false, KubikSettings::ResourceResolver.get(:test_resource, :enabled)
+  end
+
+  test "build_settings_hash casts absent boolean params to false" do
+    definition = KubikSettings.configuration.resource_registry["test_resource"]
+    merged = KubikSettings::ResourceResolver.build_settings_hash(definition, {})
+    assert_equal false, merged["enabled"]
+  end
 end

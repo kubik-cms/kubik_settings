@@ -1,0 +1,34 @@
+<% if local_assigns[:close_offcanvas] %>
+  <%= turbo_frame_tag "kubik_offcanvas_frame", data: { kubik_offcanvas_close: true } do %>
+    <%# Inner marker: Turbo may not merge data attrs onto the persistent frame element. %>
+    <span data-kubik-offcanvas-close="true" hidden aria-hidden="true"></span>
+  <% end %>
+<% else %>
+<%= turbo_frame_tag "kubik_offcanvas_frame" do %>
+  <div class="active_admin kubik-resource-settings-offcanvas">
+    <% if local_assigns[:notice].present? %>
+      <div class="flash flash_notice" role="status"><%= notice %></div>
+    <% end %>
+
+    <div class="kubik-panel-shell kubik-resource-settings-panel">
+      <%= semantic_form_for resource,
+            as: param_key,
+            url: KubikSettings::ResourceResolver.update_path(definition.key),
+            html: {
+              data: { turbo_frame: "kubik_offcanvas_frame" },
+              class: ["formtastic", param_key.to_s].join(" ")
+            } do |f| %>
+        <%= render partial: "kubik_settings/admin/resource_settings/form_fields",
+                   locals: { f: f, definition: definition, param_key: param_key } %>
+        <fieldset class="actions">
+          <ol>
+            <li class="action input_action">
+              <%= f.submit t("active_admin.update", default: "Save") %>
+            </li>
+          </ol>
+        </fieldset>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<% end %>

@@ -1,0 +1,31 @@
+<%# locals: f, definition, param_key: %>
+<% definition.form_tabs.each do |tab_def| %>
+  <fieldset class="inputs">
+    <legend><span><%= tab_def[:label] %></span></legend>
+    <ol>
+      <% Array(tab_def[:keys]).each do |key| %>
+        <% meta = definition.setting_meta(key) %>
+        <% next unless meta %>
+        <% name = "#{param_key}[#{key}]" %>
+        <% value = KubikSettings::ResourceResolver.get(definition.key, key) %>
+        <li class="<%= meta[:input] %> input optional" id="<%= param_key %>_<%= key %>_input">
+          <% if meta[:input] == :boolean %>
+            <label for="<%= param_key %>_<%= key %>" class="label">
+              <%= check_box_tag name, "1", ActiveModel::Type::Boolean.new.cast(value), id: "#{param_key}_#{key}", include_hidden: true %>
+              <%= key.to_s.humanize %>
+            </label>
+          <% elsif meta[:input] == :text %>
+            <label for="<%= param_key %>_<%= key %>" class="label"><%= key.to_s.humanize %></label>
+            <%= text_area_tag name, value, id: "#{param_key}_#{key}", rows: 4 %>
+          <% else %>
+            <label for="<%= param_key %>_<%= key %>" class="label"><%= key.to_s.humanize %></label>
+            <%= text_field_tag name, value, id: "#{param_key}_#{key}" %>
+          <% end %>
+          <% if meta[:hint].present? %>
+            <p class="inline-hints"><%= meta[:hint] %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  </fieldset>
+<% end %>

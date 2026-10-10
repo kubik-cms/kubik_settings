@@ -70,6 +70,8 @@ module KubikSettings
 end
 
 require "kubik_settings/resource_resolver"
+require "kubik_settings/admin/resource_settings_form_helper"
+require "kubik_settings/active_admin_integration/resource_settings_controller"
 
 module Kubik
   require "kubik/settings/configuration"

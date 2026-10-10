@@ -20,7 +20,7 @@ module Kubik
       end
 
       def register_resource(key, label: nil, index_resource: nil, index_path_helper: nil, tabs: nil, settings: {},
-                            fallbacks: {}, admin_as: nil)
+                            fallbacks: {}, admin_as: nil, display: :page)
         definition = ResourceDefinition.new(
           key: key,
           label: label,
@@ -29,7 +29,8 @@ module Kubik
           tabs: tabs,
           settings: settings,
           fallbacks: fallbacks,
-          admin_as: admin_as
+          admin_as: admin_as,
+          display: display
         )
         @resource_registry[definition.key] = definition
         definition

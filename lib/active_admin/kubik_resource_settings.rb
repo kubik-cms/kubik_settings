@@ -7,6 +7,7 @@ module ActiveAdmin
         def register_all!
           ::KubikSettings.ensure_configuration
           require_relative "../../app/models/kubik/resource_setting"
+          ::Kubik::ResourceSetting.register_setting_accessors!
 
           ::KubikSettings.configuration.resource_registry.each_value do |definition|
             register_one!(definition)
@@ -24,8 +25,7 @@ module ActiveAdmin
             actions :all, except: %i[create new destroy]
 
             permit_params do
-              keys = definition.setting_keys.map(&:to_sym)
-              keys + [settings_hash: keys]
+              [settings_hash: {}]
             end
 
             breadcrumb do
@@ -38,46 +38,41 @@ module ActiveAdmin
             end
 
             controller do
+              include ::KubikSettings::ActiveAdminIntegration::ResourceSettingsController
+
               define_method(:resource_setting_definition) { definition }
               define_method(:resource_setting_key) { setting_key }
+              helper_method :resource_setting_definition, :resource_setting_key
 
               def find_resource
                 Kubik::ResourceSetting.for(resource_setting_key)
               end
 
               def index
-                redirect_to action: :edit, id: find_resource.id
+                redirect_to resource_setting_index_url
               end
 
-              def update
-                param_key = active_admin_config.param_key
-                raw = params[param_key] || {}
-                merged = resource_setting_definition.setting_keys.index_with do |key|
-                  raw[key.to_s]
+              def show
+                if resource_setting_definition.offcanvas?
+                  redirect_to resource_setting_index_url
+                else
+                  redirect_to action: :edit, id: resource.id
                 end
-                params[param_key][:settings_hash] = JSON.parse(merged.to_json)
-                super
               end
-            end
-
-            show do
-              redirect_to action: :edit, id: resource.id
             end
 
             form do |f|
               tabs do
-                resource_setting_definition.form_tabs.each do |tab_def|
+                definition.form_tabs.each do |tab_def|
                   tab tab_def[:label] do
                     f.inputs do
-                      f.input :settings_hash, as: :hidden, input_html: { id: "resource_settings_#{setting_key}" }
                       Array(tab_def[:keys]).each do |key|
-                        meta = resource_setting_definition.setting_meta(key)
+                        meta = definition.setting_meta(key)
                         next unless meta
 
-                        input_html = { hint: meta[:hint] }
-                        if meta[:input] == :boolean
-                          input_html[:checked] = f.object.public_send(key)
-                        else
+                        input_html = {}
+                        input_html[:hint] = meta[:hint] if meta[:hint].present?
+                        unless meta[:input] == :boolean
                           input_html[:value] = f.object.public_send(key)
                         end
                         f.input key, as: meta[:input], input_html: input_html
@@ -86,7 +81,19 @@ module ActiveAdmin
                   end
                 end
               end
-              f.actions
+              f.actions do
+                f.action :submit
+                if definition.index_path_helper.present?
+                  f.cancel_link(public_send(definition.index_path_helper))
+                end
+              end
+            end
+
+
+            if definition.offcanvas?
+              member_action :offcanvas, method: :get do
+                render_offcanvas
+              end
             end
 
             definition.active_admin_blocks.each do |block|

@@ -27,7 +27,6 @@ namespace :kubik_settings do
       "auto_analyze_on_upload" => ai.auto_analyze_on_upload,
       "auto_apply_alt_text" => ai.auto_apply_alt_text,
       "auto_apply_tags" => ai.auto_apply_tags,
-      "prefer_no_faces" => ai.prefer_no_faces,
       "tag_vocabulary_hints" => ai.tag_vocabulary_hints,
       "context_media" => ai.context_media
     }
