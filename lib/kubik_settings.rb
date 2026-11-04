@@ -15,6 +15,7 @@ rescue LoadError => e
 end
 
 require "kubik_settings/version"
+require "kubik_settings/discoverability"
 
 module KubikSettings
   class Error < StandardError; end

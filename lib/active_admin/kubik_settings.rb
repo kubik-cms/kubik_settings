@@ -14,13 +14,8 @@ module ActiveAdmin
         Rails.application.config.after_initialize do
           ActiveAdmin.register Kubik::Setting do
             # Menu configuration
-            menu_options = ::KubikSettings.configuration.menu_options || {}
-            menu_options.each do |key, value|
-              send(key, value)
-            end
-
-            # Default menu configuration if not overridden
-            menu label: 'Settings' unless menu_options[:label]
+            menu_options = (::KubikSettings.configuration.menu_options || {}).symbolize_keys
+            menu label: menu_options.delete(:label) || "Settings", **menu_options
 
             permit_params do
               permitted = Kubik::Setting::ATTRIBUTES.keys + [:settings] + [settings_hash: []]
@@ -91,6 +86,8 @@ module ActiveAdmin
                 end.to_h
                 params[:setting][:settings_hash] = JSON.parse(merged_params.to_json)
                 super
+              ensure
+                Kubik::Discoverability.flush_caches! if defined?(Kubik::Discoverability)
               end
             end
 
