@@ -16,6 +16,7 @@ end
 
 require "kubik_settings/version"
 require "kubik_settings/discoverability"
+require "kubik_settings/frontend_view_context"
 
 module KubikSettings
   class Error < StandardError; end

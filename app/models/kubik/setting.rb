@@ -56,6 +56,22 @@ class Kubik::Setting < ActiveRecord::Base
     Rails.cache.fetch("kubik-settings") { instance }
   end
 
+  # Public site layout assigns: merged hash with configured defaults (not the AR instance).
+  def self.cached_settings_hash
+    Rails.cache.fetch("kubik/settings", expires_in: 15.minutes) do
+      build_settings_hash
+    end
+  end
+
+  def self.build_settings_hash
+    setting = instance
+    hash = (setting&.settings_hash || {}).with_indifferent_access.dup
+    ATTRIBUTES.each do |key, config|
+      hash[key] = config[:default] if hash[key].blank? && !config[:default].nil?
+    end
+    hash
+  end
+
   def self.instance
     first_or_create!(singleton_guard: 1)
   end
@@ -68,5 +84,6 @@ class Kubik::Setting < ActiveRecord::Base
 
   def flush_cache
     Rails.cache.delete("kubik-settings")
+    Rails.cache.delete("kubik/settings")
   end
 end
